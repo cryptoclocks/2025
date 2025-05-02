@@ -1340,7 +1340,7 @@
             } else if (assetType === 'crypto') {
                 csvFile = 'crypto.csv';
             }
-            let baseUrl = "https://raw.githubusercontent.com/cryptoclocks/2025/main/assets/csv/";
+            let baseUrl = "https://cryptoclocks.github.io/2025/assets/csv/";
             fetch(`${baseUrl}${csvFile}`)
                 .then(response => response.text())
                 .then(data => {
@@ -1382,7 +1382,7 @@
         //      (market มาจาก <select id="marketSelectX"> ที่คู่กัน)
         // ───────────────────────────────────────────────────────────────
         function updateCoinPreview(coin, previewId, assetType) {
-            const baseUrl = "https://raw.githubusercontent.com/cryptoclocks/2025/main/assets/images/";
+            const baseUrl = "https://cryptoclocks.github.io/2025/assets/images/";
             let imagePath = "";
 
             if (assetType === "crypto") {
