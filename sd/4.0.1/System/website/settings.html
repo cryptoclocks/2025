@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="logo.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="shortcut icon" href="logo.ico" />
+    <title>CryptoClock Setup</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* ✅ ฟอนต์หลักใหม่ */
+            font-size: 16px;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        h2,
+        h3 {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #007bff;
+            /* ให้ตัดกับเนื้อหาเล็กน้อย */
+        }
+
+
+        input[type="text"],
+        input[type="password"],
+        input[type="file"],
+        .button,
+        select,
+        input[type="color"],
+        input[type="number"] {
+            width: calc(100% - 24px);
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    transition: background-color 0.3s;
+}
+
+.button:last-child {
+    margin-bottom: 0;
+}
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .color-picker-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-left: 14px;
+            margin-right: 12px;
+        }
+
+        .color-picker-container label {
+            flex: 1;
+            text-align: left;
+        }
+
+        .color-picker-container input[type="color"],
+        #colorPicker1,
+        #colorPicker2,
+        #colorPicker3,
+        #colorPicker4 {
+            flex: none;
+            margin-left: 10px;
+            height: 38px;
+            width: 64px;
+            padding: 1px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            font-size: 16px;
+        }
+
+        .coin-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .select-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+
+        .coin-preview {
+            margin-top: -15px;
+            height: 38px;
+            width: 38px;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+
+        .asset-type {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+
+
+        .asset-type input[type="radio"] {
+            display: none;
+        }
+
+        .asset-type input[type="radio"]:checked+label {
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+            height: 48px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px 10px 14px 10px;  
+            margin: 1px 0;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 3px;
+            margin-bottom: 5px;
+        }
+
+        .card label {
+            display: block;
+            /* ✅ ชิดซ้าย */
+
+            font-weight: 500;
+            font-size: 14px;
+            color: #555;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+
+        .asset-type label {
+            flex: 1 0 48%;
+            display: inline-block;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin: 5px;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #f0f7ff;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: background-color 0.3s;
+            height: 48px;
+            min-width: 30%;
+            max-width: 50px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="color"],
+        input[type="number"] {
+            width: calc(100% - 24px);
+            padding: 10px;
+            height: 42px;
+            font-size: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="file"],
+        input[type="color"],
+        select {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            padding: 10px;
+        }
+
+
+        #preview {
+            display: block;
+            margin: 0 auto;
+            max-width: 100px;
+        }
+
+        /* Hidden sections */
+        .hidden {
+            display: none;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .nav-buttons button {
+            flex: 1;
+            margin: 0 5px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-buttons button.active {
+            background-color: #0056b3;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .toggle-label {
+            flex-grow: 1;
+            text-align: left;
+            margin-right: 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #007bff;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .duration-label,
+        .duration-select,
+        .toggle-checkbox {
+            height: 34px;
+            line-height: 34px;
+        }
+
+        .duration-select {
+            padding: 0 10px;
+            width: auto;
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-top: 16px;
+        }
+
+        .toggle-checkbox {
+            transform: scale(1.5);
+        }
+
+        .accordion-toggle {
+            cursor: pointer;
+            position: relative;
+            padding-right: 24px;
+            margin-bottom: 0;
+            transition: color 0.2s;
+        }
+
+        .accordion-toggle::after {
+            content: '▼';
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .card.collapsed .accordion-toggle::after {
+            transform: rotate(-90deg);
+        }
+
+        .card .accordion-content {
+            transition: max-height 0.3s cubic-bezier(.4, 0, .2, 1), opacity 0.2s;
+            overflow: hidden;
+            max-height: 1200px;
+            opacity: 1;
+        }
+
+        .card.collapsed .accordion-content {
+            max-height: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .personal-info-title {
+            color: #ffffff !important;
+            /* สีเขียวอมฟ้า, หรือจะใช้สีอื่นที่ไม่ซ้ำ profile */
+            background: linear-gradient(90deg, #056dff 0%, #bbbdff 100%);
+            border-radius: 7px 7px 0 0;
+            padding: 7px 0 7px 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+        }
+
+        .card img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    max-width: 90%;
+    height: auto;
+}
+/* ปุ่ม secondary, ปรับดีไซน์ให้เบา/ต่าง */
+.button-secondary {
+    display: block;
+    width: 100%;
+    background: #fff;
+    color: #007bff;
+    border: 2px solid #007bff;
+    border-radius: 6px;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.button-secondary:hover {
+    background: #f0f7ff;
+    color: #0056b3;
+    border-color: #0056b3;
+}
+
+
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>CryptoClock Setup</h2>
+        <div class="nav-buttons">
+            <button id="profileBtn" onclick="showSection('profileSection')">Profile Setup</button>
+            <button id="coinBtn" onclick="showSection('coinSection')">Coin Setup</button>
+            <button id="alertBtn" onclick="showSection('alertSection')">Alert Setup</button>
+            <button id="pageBtn" onclick="showSection('pageSection')">Page Setup</button>
+        </div>
+
+        <!-- Profile Setup Form -->
+        <!-- Profile Setup Form -->
+        <form id="profileSection" action="/submit-profile" method="post" enctype="multipart/form-data" class="hidden">
+            <h3>Profile Setup</h3>
+
+            <!-- 🧍‍♂️ Profile Info -->
+            <div class="card">
+                <h4 class="accordion-toggle personal-info-title">Personal Information</h4>
+                <div class="accordion-content">
+                    <img id="preview" style="margin-bottom: 10px;">
+                    <input type="file" id="imageInput" name="profile" accept="image/*"
+                        onchange="convertAndPreviewImage(event)">
+                    <input type="text" name="firstname" placeholder="Firstname" required>
+                    <input type="text" name="lastname" placeholder="Lastname" required>
+                    <input type="text" name="nickname" placeholder="Nickname" required>
+                    <input type="text" name="position" placeholder="Position" required>
+                    <input type="text" name="company" placeholder="Company Name" required>
+                    <input type="text" name="motto" placeholder="Motto" required maxlength="19">
+                </div>
+            </div>
+
+            <!-- 🎨 Display Colors -->
+            <div class="card">
+                <h4 class="accordion-toggle personal-info-title">Display Colors</h4>
+                <div class="accordion-content">
+                    <div class="color-picker-container">
+                        <label for="bgcolor">Background Color:</label>
+                        <input id="bgcolor" type="color" name="bgcolor" value="#ffffff" required>
+                    </div>
+                    <div class="color-picker-container">
+                        <label for="namecolor">Name Surname Color:</label>
+                        <input id="namecolor" type="color" name="namecolor" value="#000000" required>
+                    </div>
+                    <div class="color-picker-container">
+                        <label for="detailcolor">Nickname, Position, Company Color:</label>
+                        <input id="detailcolor" type="color" name="detailcolor" value="#000000" required>
+                    </div>
+                    <div class="color-picker-container">
+                        <label for="mottocolor">Motto Color:</label>
+                        <input id="mottocolor" type="color" name="mottocolor" value="#000000" required>
+                    </div>
+                    <div class="color-picker-container">
+                        <label for="datetimecolor">Date and Time Color:</label>
+                        <input id="datetimecolor" type="color" name="datetimecolor" value="#000000" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📱 Contact & Social -->
+            <div class="card">
+                <h4 class="accordion-toggle personal-info-title">Contact & Social</h4>
+                <div class="accordion-content">
+                    <!-- Contact -->
+                    <div>
+                        <label for="contact_line">LINE ID</label>
+                        <input type="text" id="contact_line" name="contact_line" placeholder="Enter your LINE ID">
+                    </div>
+
+                    <div>
+                        <label for="contact_whatsapp">WhatsApp</label>
+                        <input type="text" id="contact_whatsapp" name="contact_whatsapp"
+                            placeholder="Enter WhatsApp number">
+                    </div>
+
+                    <div>
+                        <label for="contact_tel">Phone Number</label>
+                        <input type="text" id="contact_tel" name="contact_tel" placeholder="Enter phone number">
+                    </div>
+
+                    <div>
+                        <label for="contact_email">Email</label>
+                        <input type="email" id="contact_email" name="contact_email" placeholder="Enter email">
+                    </div>
+
+                    <!-- Social -->
+                    <div>
+                        <label for="social_facebook">Facebook URL</label>
+                        <input type="text" id="social_facebook" name="social_facebook"
+                            placeholder="https://facebook.com/...">
+                    </div>
+
+                    <div>
+                        <label for="social_instagram">Instagram URL</label>
+                        <input type="text" id="social_instagram" name="social_instagram"
+                            placeholder="https://instagram.com/...">
+                    </div>
+
+                    <div>
+                        <label for="social_youtube">YouTube URL</label>
+                        <input type="text" id="social_youtube" name="social_youtube"
+                            placeholder="https://youtube.com/...">
+                    </div>
+
+                    <div>
+                        <label for="social_tiktok">TikTok URL</label>
+                        <input type="text" id="social_tiktok" name="social_tiktok" placeholder="https://tiktok.com/...">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 💰 Wallet -->
+            <div class="card">
+                <h4 class="accordion-toggle personal-info-title">Wallet Address</h4>
+                <div class="accordion-content">
+
+                    <label for="wallet_usdt">USDT Wallet:</label>
+                    <input type="text" id="wallet_usdt" name="wallet_usdt" placeholder="USDT Wallet">
+
+                    <label for="wallet_btc">BTC Wallet:</label>
+                    <input type="text" id="wallet_btc" name="wallet_btc" placeholder="BTC Wallet">
+
+                    <label for="wallet_cct">CCT Wallet:</label>
+                    <input type="text" id="wallet_cct" name="wallet_cct" placeholder="CCT Wallet">
+
+                    <label for="wallet_stripe">Stripe Account:</label>
+                    <input type="text" id="wallet_stripe" name="wallet_stripe" placeholder="Stripe Account">
+
+                    <label for="wallet_promptpay">PromptPay Number:</label>
+                    <input type="text" id="wallet_promptpay" name="wallet_promptpay" placeholder="PromptPay Number">
+                </div>
+            </div>
+
+            <!-- 🌍 Region & Timezone -->
+            <div class="card">
+                <h4 class="accordion-toggle personal-info-title">Region & TimeZone</h4>
+                <div class="accordion-content">
+
+                    <label for="regionSelect">Region:</label>
+                    <select id="regionSelect" name="region" required>
+                        <option value="global">global – Universal settings</option>
+                        <option value="thailand">thailand – Thailand</option>
+                    </select>
+
+
+                    <label for="timeZoneSelect">Timezone:</label>
+                    <select id="timeZoneSelect" name="timeZone" required>
+                        <option value="Pacific/Midway">(GMT-11:00) Midway Island</option>
+                        <option value="Pacific/Pago_Pago">(GMT-11:00) Pago Pago</option>
+                        <option value="Pacific/Honolulu">(GMT-10:00) Hawaii</option>
+                        <option value="America/Anchorage">(GMT-09:00) Alaska</option>
+                        <option value="America/Los_Angeles">(GMT-08:00) Pacific Time (US & Canada)</option>
+                        <option value="America/Denver">(GMT-07:00) Mountain Time (US & Canada)</option>
+                        <option value="America/Chicago">(GMT-06:00) Central Time (US & Canada)</option>
+                        <option value="America/New_York">(GMT-05:00) Eastern Time (US & Canada)</option>
+                        <option value="America/Caracas">(GMT-04:30) Caracas</option>
+                        <option value="America/Halifax">(GMT-04:00) Atlantic Time (Canada)</option>
+                        <option value="America/Sao_Paulo">(GMT-03:00) Brasilia</option>
+                        <option value="Atlantic/South_Georgia">(GMT-02:00) Mid-Atlantic</option>
+                        <option value="Atlantic/Azores">(GMT-01:00) Azores</option>
+                        <option value="Europe/London">(GMT+00:00) London</option>
+                        <option value="Europe/Paris">(GMT+01:00) Paris</option>
+                        <option value="Europe/Athens">(GMT+02:00) Athens</option>
+                        <option value="Asia/Baghdad">(GMT+03:00) Baghdad</option>
+                        <option value="Asia/Tehran">(GMT+03:30) Tehran</option>
+                        <option value="Asia/Dubai">(GMT+04:00) Abu Dhabi</option>
+                        <option value="Asia/Kabul">(GMT+04:30) Kabul</option>
+                        <option value="Asia/Karachi">(GMT+05:00) Islamabad</option>
+                        <option value="Asia/Kolkata">(GMT+05:30) Mumbai</option>
+                        <option value="Asia/Kathmandu">(GMT+05:45) Kathmandu</option>
+                        <option value="Asia/Dhaka">(GMT+06:00) Dhaka</option>
+                        <option value="Asia/Bangkok">(GMT+07:00) Bangkok</option>
+                        <option value="Asia/Hong_Kong">(GMT+08:00) Hong Kong</option>
+                        <option value="Asia/Tokyo">(GMT+09:00) Tokyo</option>
+                        <option value="Australia/Sydney">(GMT+10:00) Sydney</option>
+                        <option value="Pacific/Fiji">(GMT+12:00) Fiji</option>
+                        <option value="Pacific/Tongatapu">(GMT+13:00) Nuku'alofa</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ⚙️ Hidden values + Submit -->
+            <input type="hidden" name="refer" value="">
+            <input type="hidden" name="referring" value="[]">
+
+            <button type="submit" name="submit1" class="button">Submit Profile</button>
+        </form>
+
+
+
+        <!-- Coin Setup Form -->
+        <form id="coinSection" action="/submit-coins" method="post" class="hidden">
+            <h3>Select Coins</h3>
+
+            <div class="card">
+                <div class="coin-label">Currency 1</div>
+                <label for="currencySelect1">Select Currency:</label>
+                <select id="currencySelect1" name="currency1" required disabled>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="THB">THB</option>
+                    <option value="JPY">JPY</option>
+                    <option value="CNY">CNY</option>
+                    <option value="KRW">KRW</option>
+                    <option value="HKD">HKD</option>
+                    <option value="SGD">SGD</option>
+                    <option value="GBP">GBP</option>
+                    <option value="AUD">AUD</option>
+                    <option value="CAD">CAD</option>
+                    <option value="CHF">CHF</option>
+                    <option value="INR">INR</option>
+                    <option value="IDR">IDR</option>
+                    <option value="MYR">MYR</option>
+                    <option value="LBP">LBP</option>
+                    <option value="USDT">USDT</option>
+                    <option value="USDC">USDC</option>
+                </select>
+
+                <div class="coin-label">Currency 2</div>
+                <label for="currencySelect2">Select Currency:</label>
+                <select id="currencySelect2" name="currency2" required>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="THB">THB</option>
+                    <option value="JPY">JPY</option>
+                    <option value="CNY">CNY</option>
+                    <option value="KRW">KRW</option>
+                    <option value="HKD">HKD</option>
+                    <option value="SGD">SGD</option>
+                    <option value="GBP">GBP</option>
+                    <option value="AUD">AUD</option>
+                    <option value="CAD">CAD</option>
+                    <option value="CHF">CHF</option>
+                    <option value="INR">INR</option>
+                    <option value="IDR">IDR</option>
+                    <option value="MYR">MYR</option>
+                     <option value="LBP">LBP</option>
+                    <option value="USDT">USDT</option>
+                    <option value="USDC">USDC</option>
+                </select>
+            </div>
+
+            <div class="card">
+                <div class="coin-label">Coin 1</div>
+                <div class="asset-type">
+                    <input type="radio" id="crypto1" name="assetType1" value="crypto" checked>
+                    <label for="crypto1">Crypto</label>
+                    <input type="radio" id="indice1" name="assetType1" value="indice">
+                    <label for="indice1">Indice</label>
+                    <input type="radio" id="stock1" name="assetType1" value="stock">
+                    <label for="stock1">Stock</label>
+                    <input type="radio" id="currency1" name="assetType1" value="currency">
+                    <label for="currency1">Currency</label>
+                </div>
+                <!-- ⬇️ Coin 1 Market Selector -->
+                <div id="marketSelect1Wrapper" style="width:100%; margin-top: 10px;">
+                    <label for="marketSelect1">Select Market:</label>
+                    <select id="marketSelect1" name="market1">
+                        <option value="SET">SET – Thailand</option>
+                        <option value="NASDAQ">NASDAQ – United States</option>
+                        <option value="NYSE">NYSE – United States</option>
+                        <option value="TSE">TSE – Japan</option>
+                        <option value="HKEX">HKEX – Hong Kong</option>
+                        <option value="SSE">SSE – China (Shanghai)</option>
+                        <option value="SZSE">SZSE – China (Shenzhen)</option>
+                        <option value="BSE">BSE – India (Bombay)</option>
+                        <option value="NSE">NSE – India</option>
+                        <option value="KRX">KRX – South Korea</option>
+                        <option value="ASX">ASX – Australia</option>
+                        <option value="LSE">LSE – United Kingdom</option>
+                        <option value="FWB">FWB – Germany (Frankfurt)</option>
+                        <option value="EURONEXT">EURONEXT – Europe</option>
+                        <option value="BMV">BMV – Mexico</option>
+                        <option value="TSX">TSX – Canada</option>
+                    </select>
+                </div>
+
+
+                <div class="select-container">
+                    <img id="coinPreview1" src="" alt="Coin Preview" class="coin-preview">
+                    <select id="coinSelect1" name="coin1">
+                        <option value="{{coin1}}" selected>{{coin1}}</option>
+                    </select>
+                    <input type="color" id="colorPicker1" name="color1" value="#ffffff">
+                </div>
+            </div>
+            <div class="card">
+                <div class="coin-label">Coin 2</div>
+                <div class="asset-type">
+                    <input type="radio" id="crypto2" name="assetType2" value="crypto" checked>
+                    <label for="crypto2">Crypto</label>
+                    <input type="radio" id="indice2" name="assetType2" value="indice">
+                    <label for="indice2">Indice</label>
+                    <input type="radio" id="stock2" name="assetType2" value="stock">
+                    <label for="stock2">Stock</label>
+                    <input type="radio" id="currency2" name="assetType2" value="currency">
+                    <label for="currency2">Currency</label>
+                </div>
+                <!-- ⬇️ Coin 2 Market Selector -->
+                <div id="marketSelect2Wrapper" style="width:100%; margin-top: 10px;">
+                    <label for="marketSelect2">Select Market:</label>
+                    <select id="marketSelect2" name="market2">
+                        <option value="SET">SET – Thailand</option>
+                        <option value="NASDAQ">NASDAQ – United States</option>
+                        <option value="NYSE">NYSE – United States</option>
+                        <option value="TSE">TSE – Japan</option>
+                        <option value="HKEX">HKEX – Hong Kong</option>
+                        <option value="SSE">SSE – China (Shanghai)</option>
+                        <option value="SZSE">SZSE – China (Shenzhen)</option>
+                        <option value="BSE">BSE – India (Bombay)</option>
+                        <option value="NSE">NSE – India</option>
+                        <option value="KRX">KRX – South Korea</option>
+                        <option value="ASX">ASX – Australia</option>
+                        <option value="LSE">LSE – United Kingdom</option>
+                        <option value="FWB">FWB – Germany (Frankfurt)</option>
+                        <option value="EURONEXT">EURONEXT – Europe</option>
+                        <option value="BMV">BMV – Mexico</option>
+                        <option value="TSX">TSX – Canada</option>
+                    </select>
+                </div>
+
+                <div class="select-container">
+                    <img id="coinPreview2" src="" alt="Coin Preview" class="coin-preview">
+                    <select id="coinSelect2" name="coin2">
+                        <option value="{{coin2}}" selected>{{coin2}}</option>
+                    </select>
+                    <input type="color" id="colorPicker2" name="color2" value="#ffffff">
+                </div>
+            </div>
+            <div class="card">
+                <div class="coin-label">Coin 3</div>
+                <div class="asset-type">
+                    <input type="radio" id="crypto3" name="assetType3" value="crypto" checked>
+                    <label for="crypto3">Crypto</label>
+                    <input type="radio" id="indice3" name="assetType3" value="indice">
+                    <label for="indice3">Indice</label>
+                    <input type="radio" id="stock3" name="assetType3" value="stock">
+                    <label for="stock3">Stock</label>
+                    <input type="radio" id="currency3" name="assetType3" value="currency">
+                    <label for="currency3">Currency</label>
+                </div>
+                <!-- ⬇️ Coin 3 Market Selector -->
+                <div id="marketSelect3Wrapper" style="width:100%; margin-top: 10px;">
+                    <label for="marketSelect3">Select Market:</label>
+                    <select id="marketSelect3" name="market3">
+                        <option value="SET">SET – Thailand</option>
+                        <option value="NASDAQ">NASDAQ – United States</option>
+                        <option value="NYSE">NYSE – United States</option>
+                        <option value="TSE">TSE – Japan</option>
+                        <option value="HKEX">HKEX – Hong Kong</option>
+                        <option value="SSE">SSE – China (Shanghai)</option>
+                        <option value="SZSE">SZSE – China (Shenzhen)</option>
+                        <option value="BSE">BSE – India (Bombay)</option>
+                        <option value="NSE">NSE – India</option>
+                        <option value="KRX">KRX – South Korea</option>
+                        <option value="ASX">ASX – Australia</option>
+                        <option value="LSE">LSE – United Kingdom</option>
+                        <option value="FWB">FWB – Germany (Frankfurt)</option>
+                        <option value="EURONEXT">EURONEXT – Europe</option>
+                        <option value="BMV">BMV – Mexico</option>
+                        <option value="TSX">TSX – Canada</option>
+                    </select>
+                </div>
+
+                <div class="select-container">
+                    <img id="coinPreview3" src="" alt="Coin Preview" class="coin-preview">
+                    <select id="coinSelect3" name="coin3">
+                        <option value="{{coin3}}" selected>{{coin3}}</option>
+                    </select>
+                    <input type="color" id="colorPicker3" name="color3" value="#ffffff">
+                </div>
+            </div>
+            <div class="card">
+                <div class="coin-label">Coin 4</div>
+                <div class="asset-type">
+                    <input type="radio" id="crypto4" name="assetType4" value="crypto" checked>
+                    <label for="crypto4">Crypto</label>
+                    <input type="radio" id="indice4" name="assetType4" value="indice">
+                    <label for="indice4">Indice</label>
+                    <input type="radio" id="stock4" name="assetType4" value="stock">
+                    <label for="stock4">Stock</label>
+                    <input type="radio" id="currency4" name="assetType4" value="currency">
+                    <label for="currency4">Currency</label>
+                </div>
+                <!-- ⬇️ Coin 4 Market Selector -->
+                <div id="marketSelect4Wrapper" style="width:100%; margin-top: 10px;">
+                    <label for="marketSelect4">Select Market:</label>
+                    <select id="marketSelect4" name="market4">
+                        <option value="SET">SET – Thailand</option>
+                        <option value="NASDAQ">NASDAQ – United States</option>
+                        <option value="NYSE">NYSE – United States</option>
+                        <option value="TSE">TSE – Japan</option>
+                        <option value="HKEX">HKEX – Hong Kong</option>
+                        <option value="SSE">SSE – China (Shanghai)</option>
+                        <option value="SZSE">SZSE – China (Shenzhen)</option>
+                        <option value="BSE">BSE – India (Bombay)</option>
+                        <option value="NSE">NSE – India</option>
+                        <option value="KRX">KRX – South Korea</option>
+                        <option value="ASX">ASX – Australia</option>
+                        <option value="LSE">LSE – United Kingdom</option>
+                        <option value="FWB">FWB – Germany (Frankfurt)</option>
+                        <option value="EURONEXT">EURONEXT – Europe</option>
+                        <option value="BMV">BMV – Mexico</option>
+                        <option value="TSX">TSX – Canada</option>
+                    </select>
+                </div>
+                <div class="select-container">
+                    <img id="coinPreview4" src="" alt="Coin Preview" class="coin-preview">
+                    <select id="coinSelect4" name="coin4">
+                        <option value="{{coin4}}" selected>{{coin4}}</option>
+                    </select>
+                    <input type="color" id="colorPicker4" name="color4" value="#ffffff">
+                </div>
+            </div>
+            <h3>Config API</h3>
+            <button type="button" id="apiButton" class="button-secondary" onclick="openApi()">Manage
+                API</button>
+            <input type="hidden" id="type1" name="type1" value="{{type1}}">
+            <input type="hidden" id="type2" name="type2" value="{{type2}}">
+            <input type="hidden" id="type3" name="type3" value="{{type3}}">
+            <input type="hidden" id="type4" name="type4" value="{{type4}}">
+
+
+            <button type="submit" name="submit2" class="button">Submit Coins</button>
+        </form>
+
+        <!-- Alert Setup Form -->
+        <form id="alertSection" action="/submit-alerts" method="post" class="hidden">
+            <h3>Alert Setup</h3>
+            <!-- <h4>LINE Notify Setup</h4>
+            <input type="text" id="lineNotifyToken" name="lineNotifyToken" placeholder="LINE Notify Token" required>
+            <h4>Alert Notification Setup</h4>
+            <div class="toggle-container">
+                <label for="lineAlert" class="toggle-label">Enable Line Notifications:</label>
+                <label class="switch">
+                    <input type="checkbox" id="lineAlertToggle" name="lineAlertToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div> -->
+
+            <div class="toggle-container">
+                <label for="lotteryAlert" class="toggle-label">Show Thai Lottery Alert:</label>
+                <label class="switch">
+                    <input id="lotteryAlertToggle" type="checkbox" name="lotteryAlertToggle">
+                    <span class="slider round"></span>
+                </label>
+                <input type="hidden" id="lotteryAlert" name="lotteryAlert" value="{{lotteryAlert}}">
+            </div>
+            <!-- <input type="hidden" id="lotteryAlertToggleValue1" name="lotteryAlertToggleValue1" value=""> -->
+            <!-- <input type="hidden" id="lineAlertToggleValue1" name="lineAlertToggleValue1" value=""> -->
+
+            <button type="submit" name="submit3" class="button">Submit Alerts</button>
+        </form>
+
+        <!-- Page Show Setup Form -->
+        <form id="pageSection" action="/submit-page" method="post" class="hidden">
+
+            <h3>Page Show Setup</h3>
+
+            <div class="color-picker-container">
+                <label for="pageMode">Page Mode:</label>
+                <div style="display: flex; align-items: center; height: 24px;">
+                    <span>Static</span>
+                    <label class="switch" style="margin: 0 10px;">
+                        <input type="checkbox" id="pageMode" name="pageMode">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Dynamic</span>
+                </div>
+            </div>
+            <div id="dynamicPages">
+
+                <div class="card">
+                    <h4>Profile Page</h4>
+                    <img src="https://raw.githubusercontent.com/cryptoclocks/2025/main/pages/profilePage.jpg"
+                        alt="Profile Page Preview" style="width:320px;height:auto;">
+                    <div class="color-picker-container">
+                        <label for="profileDuration" class="duration-label">Duration (sec):</label>
+                        <select id="profileDuration" name="profileDuration" class="duration-select">
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                            <option value="60">60</option>
+                            <option value="75">75</option>
+                            <option value="90">90</option>
+                        </select>
+                        <input id="profileToggle" type="checkbox" name="profileToggle" class="toggle-checkbox">
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>Coin Page</h4>
+                    <img src="https://raw.githubusercontent.com/cryptoclocks/2025/main/pages/coinPage.jpg"
+                        alt="Coin Page Preview" style="width:320px;height:auto;">
+                    <div class="color-picker-container">
+                        <label for="coinDuration" class="duration-label">Duration (sec):</label>
+                        <select id="coinDuration" name="coinDuration" class="duration-select">
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                            <option value="60">60</option>
+                            <option value="75">75</option>
+                            <option value="90">90</option>
+                        </select>
+                        <input id="coinToggle" type="checkbox" name="coinToggle" class="toggle-checkbox" checked
+                            disabled>
+                    </div>
+                </div>
+                <div class="card" id="screensaverCard">
+                    <h4>Screen Saver Page</h4>
+                    <img src="https://raw.githubusercontent.com/cryptoclocks/2025/main/pages/scnsvrPage.jpg"
+                        alt="Screen Saver Page Preview" style="width:320px;height:auto;">
+                    <div class="color-picker-container">
+                        <label for="screensaverDuration" class="duration-label">Duration (sec):</label>
+                        <select id="screensaverDuration" name="screensaverDuration" class="duration-select">
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                            <option value="60">60</option>
+                            <option value="75">75</option>
+                            <option value="90">90</option>
+                        </select>
+                        <input id="screensaverToggle" type="checkbox" name="screensaverToggle" class="toggle-checkbox">
+                    </div>
+                    <button type="button" id="screensaverButton" class="button-secondary" onclick="openIndex2()">Manage
+                        Screensaver</button>
+                </div>
+            </div>
+            <input type="hidden" id="pageModeValue1" name="pageModeValue1" value="">
+            <input type="hidden" id="profileToggleValue1" name="profileToggleValue1" value="">
+            <input type="hidden" id="coinToggleValue1" name="coinToggleValue1" value="">
+            <input type="hidden" id="screensaverToggleValue1" name="screensaverToggleValue1" value="">
+            <button type="submit" name="submit4" class="button">Submit Page Setup</button>
+        </form>
+    </div>
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.hidden');
+            sections.forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+
+            const buttons = document.querySelectorAll('.nav-buttons button');
+            buttons.forEach(button => button.classList.remove('active'));
+            document.querySelector(`#${sectionId.replace('Section', 'Btn')}`).classList.add('active');
+        }
+    </script>
+
+    <script>
+
+        function toggleMarketDropdown(assetType, wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            if (assetType === 'stock') {
+                wrapper.classList.remove('hidden');
+            } else {
+                wrapper.classList.add('hidden');
+            }
+        }
+
+
+        function convertAndPreviewImage(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var img = new Image();
+                img.onload = function () {
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+                    canvas.width = 100;
+                    canvas.height = 100;
+
+                    var ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+                    var newWidth = img.width * ratio;
+                    var newHeight = img.height * ratio;
+
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    var xOffset = (canvas.width - newWidth) / 2;
+                    var yOffset = (canvas.height - newHeight) / 2;
+                    ctx.drawImage(img, xOffset, yOffset, newWidth, newHeight);
+
+                    canvas.toBlob(function (blob) {
+                        var newFile = new File([blob], file.name.replace(/\..+$/, '.jpg'), { type: 'image/jpeg' });
+                        var dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(newFile);
+                        document.getElementById('imageInput').files = dataTransfer.files;
+
+                        var output = document.getElementById('preview');
+                        output.src = URL.createObjectURL(blob);
+                    }, 'image/jpeg', 0.92);
+                };
+                img.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function openIndex2() {
+            window.open('/gallery.html', '_blank');
+        }
+
+        function openApi() {
+            window.open('/api.html', '_blank');
+        }
+
+
+        window.addEventListener('load', function () {
+
+            fetchInitialValues();
+            fetchProfileImage();
+            fetchProfileInfo();
+            updateToggleValues();
+            toggleMarketDropdown(document.querySelector('[name="assetType1"]:checked').value, 'marketSelect1Wrapper');
+            toggleMarketDropdown(document.querySelector('[name="assetType2"]:checked').value, 'marketSelect2Wrapper');
+            toggleMarketDropdown(document.querySelector('[name="assetType3"]:checked').value, 'marketSelect3Wrapper');
+            toggleMarketDropdown(document.querySelector('[name="assetType4"]:checked').value, 'marketSelect4Wrapper');
+
+        });
+
+
+        function fetchProfileImage() {
+            var imageElement = document.getElementById('preview');
+            imageElement.src = '/profile.jpg';
+            imageElement.style.display = 'block';
+        }
+
+        function toggleAllMarkets() {
+            for (let i = 1; i <= 4; i++) {
+                let type = document.querySelector(`[name="assetType${i}"]:checked`).value;
+                toggleMarketDropdown(type, `marketSelect${i}Wrapper`);
+            }
+        }
+
+
+        function fetchProfileInfo() {
+            fetch('/profile-info')
+                .then(response => response.json())
+                .then(data => {
+                    const p = data.profile;
+                    document.getElementsByName('firstname')[0].value = p.firstname || '';
+                    document.getElementsByName('lastname')[0].value = p.lastname || '';
+                    document.getElementsByName('nickname')[0].value = p.nickname || '';
+                    document.getElementsByName('position')[0].value = p.position || '';
+                    document.getElementsByName('company')[0].value = p.company || '';
+                    document.getElementsByName('motto')[0].value = p.motto || '';
+
+                    const c = p.colors;
+                    document.getElementById('bgcolor').value = c.background || '#000000';
+                    document.getElementById('namecolor').value = c.name || '#FFAE00';
+                    document.getElementById('detailcolor').value = c.detail || '#FFFFFF';
+                    document.getElementById('mottocolor').value = c.motto || '#FFAE00';
+                    document.getElementById('datetimecolor').value = c.dateTime || '#FFFFFF';
+
+                    // Contact
+                    document.getElementsByName('contact_line')[0].value = data.profile.contacts.line || '';
+                    document.getElementsByName('contact_whatsapp')[0].value = data.profile.contacts.whatsapp || '';
+                    document.getElementsByName('contact_tel')[0].value = data.profile.contacts.telephone || '';
+                    document.getElementsByName('contact_email')[0].value = data.profile.contacts.email || '';
+
+                    // Social
+                    document.getElementsByName('social_facebook')[0].value = data.profile.contacts.facebook || '';
+                    document.getElementsByName('social_instagram')[0].value = data.profile.contacts.instagram || '';
+                    document.getElementsByName('social_youtube')[0].value = data.profile.contacts.youtube || '';
+                    document.getElementsByName('social_tiktok')[0].value = data.profile.contacts.tiktok || '';
+
+
+                    document.getElementsByName('wallet_usdt')[0].value = data.wallet.usdt || '';
+                    document.getElementsByName('wallet_btc')[0].value = data.wallet.btc || '';
+                    document.getElementsByName('wallet_cct')[0].value = data.wallet.cct || '';
+                    document.getElementsByName('wallet_stripe')[0].value = data.wallet.stripe || '';
+                    document.getElementsByName('wallet_promptpay')[0].value = data.wallet.promptpay || '';
+
+
+                });
+        }
+
+
+        function fetchInitialValues() {
+            fetch('/initial-values')
+                .then(response => response.json())
+                .then(data => {
+                    // ตรวจสอบค่าที่ต้องการ
+                    if (!data.pageMode) alert('pageMode is missing');
+                    if (!data.profileDuration) alert('profileDuration is missing');
+                    if (data.profileToggle === undefined) alert('profileToggle is missing');
+                    if (!data.coinDuration) alert('coinDuration is missing');
+                    if (data.coinToggle === undefined) alert('coinToggle is missing');
+                    if (!data.screensaverDuration) alert('screensaverDuration is missing');
+                    if (data.screensaverToggle === undefined) alert('screensaverToggle is missing');
+                    // if (!data.lineNotifyToken) alert('lineNotifyToken is missing');
+                    if (!data.sdStatus) alert('sdStatus is missing');
+                    if (!data.lotteryAlert === undefined) alert('lotteryAlert is missing');
+                    // if (!data.lineAlert === undefined) alert('lineAlert is missing');
+                    if (!data.coin1) alert('coin1 is missing');
+                    if (!data.coin2) alert('coin2 is missing');
+                    if (!data.coin3) alert('coin3 is missing');
+                    if (!data.coin4) alert('coin4 is missing');
+                    if (!data.type1) alert('type1 is missing');
+                    if (!data.type2) alert('type2 is missing');
+                    if (!data.type3) alert('type3 is missing');
+                    if (!data.type4) alert('type4 is missing');
+                    if (!data.color1) alert('color1 is missing');
+                    if (!data.color2) alert('color2 is missing');
+                    if (!data.color3) alert('color3 is missing');
+                    if (!data.color4) alert('color4 is missing');
+
+                    // การตั้งค่าเริ่มต้นตามที่มีอยู่
+                    document.getElementById('pageMode').checked = data.pageMode === 'dynamic';
+                    document.getElementById('profileDuration').value = data.profileDuration || "15";
+                    document.getElementById('profileToggle').checked = data.profileToggle;
+                    document.getElementById('coinDuration').value = data.coinDuration || "15";
+                    document.getElementById('coinToggle').checked = data.coinToggle;
+                    document.getElementById('screensaverDuration').value = data.screensaverDuration || "15";
+
+                    document.getElementById('screensaverToggle').checked = data.screensaverToggle;
+                    document.getElementById('screensaverToggle').readOnly = !data.sdStatus;
+                    // document.getElementById('lineNotifyToken').value = data.lineNotifyToken || '';
+                    document.getElementById('screensaverButton').disabled = !data.sdStatus;
+
+                    if (!data.sdStatus) {
+                        screensaverCard.style.filter = 'grayscale(100%)';
+                    }
+
+
+
+                    const dynamicPages = document.getElementById('dynamicPages');
+                    if (data.pageMode === 'dynamic') {
+                        dynamicPages.style.display = 'block';
+                    } else {
+                        dynamicPages.style.display = 'none';
+                    }
+
+                    let type1 = data.type1;
+                    let type2 = data.type2;
+                    let type3 = data.type3;
+                    let type4 = data.type4;
+                    let assetType1 = convertTypeToAsset(type1);
+                    let assetType2 = convertTypeToAsset(type2);
+                    let assetType3 = convertTypeToAsset(type3);
+                    let assetType4 = convertTypeToAsset(type4);
+                    setRadioSelection('assetType1', assetType1);
+                    setRadioSelection('assetType2', assetType2);
+                    setRadioSelection('assetType3', assetType3);
+                    setRadioSelection('assetType4', assetType4);
+                    setupEventListeners();
+                    // ✅ ใส่ตรงนี้เลย
+                    requestAnimationFrame(() => {
+                        if (assetType1 !== 'stock') {
+                            document.getElementById('marketSelect1Wrapper').classList.add('hidden');
+                        }
+                        if (assetType2 !== 'stock') {
+                            document.getElementById('marketSelect2Wrapper').classList.add('hidden');
+                        }
+                        if (assetType3 !== 'stock') {
+                            document.getElementById('marketSelect3Wrapper').classList.add('hidden');
+                        }
+                        if (assetType4 !== 'stock') {
+                            document.getElementById('marketSelect4Wrapper').classList.add('hidden');
+                        }
+                    });
+
+                    // เพิ่มตรงนี้หลัง setupEventListeners เพื่อให้โชว์/ซ่อนตลาดให้ถูกทันที
+                    document.getElementById('marketSelect1').value = data.market1 || 'NASDAQ';
+                    document.getElementById('marketSelect2').value = data.market2 || 'NASDAQ';
+                    document.getElementById('marketSelect3').value = data.market3 || 'NASDAQ';
+                    document.getElementById('marketSelect4').value = data.market4 || 'NASDAQ';
+
+
+                    fetchData(assetType1, 'coinSelect1', 'coinPreview1', data.coin1);
+                    fetchData(assetType2, 'coinSelect2', 'coinPreview2', data.coin2);
+                    fetchData(assetType3, 'coinSelect3', 'coinPreview3', data.coin3);
+                    fetchData(assetType4, 'coinSelect4', 'coinPreview4', data.coin4);
+
+                    document.getElementById('type1').value = type1;
+                    document.getElementById('type2').value = type2;
+                    document.getElementById('type3').value = type3;
+                    document.getElementById('type4').value = type4;
+
+
+                    document.getElementById('colorPicker1').value = data.color1;
+                    document.getElementById('colorPicker2').value = data.color2;
+                    document.getElementById('colorPicker3').value = data.color3 || '#ffffff';
+                    document.getElementById('colorPicker4').value = data.color4 || '#ffffff';
+                    document.getElementById('lotteryAlertToggle').checked = data.lotteryAlert;
+
+                    //loadRegions(data.region || 'default');
+                    document.getElementById('timeZoneSelect').value = data.timeZone || 'Asia/Bangkok';
+                    document.getElementById('regionSelect').value = data.region || 'default';
+                    document.getElementById('currencySelect1').value = data.currency1 || 'USD';
+                    document.getElementById('currencySelect2').value = data.currency2 || 'THB';
+
+                    updateToggleValues();
+
+                    // document.getElementById('lineAlertToggle').checked = data.lineAlert;
+                })
+                .catch(error => console.error('Error fetching initial values:', error));
+        }
+
+
+        const pageMode = document.getElementById('pageMode');
+        const dynamicPages = document.getElementById('dynamicPages');
+
+        pageMode.addEventListener('change', function () {
+            dynamicPages.style.display = this.checked ? 'block' : 'none';
+        });
+
+        const profileToggle = document.getElementById('profileToggle');
+        const coinToggle = document.getElementById('coinToggle');
+        const screensaverToggle = document.getElementById('screensaverToggle');
+        const lotteryAlertToggle = document.getElementById('lotteryAlertToggle');
+        // const lineAlertToggle = document.getElementById('lineAlertToggle');
+        function updateToggleValues() {
+            document.getElementById('pageModeValue1').value = pageMode.checked ? 'dynamic' : 'static';
+            document.getElementById('profileToggleValue1').value = profileToggle.checked ? 'true' : 'false';
+            document.getElementById('coinToggleValue1').value = coinToggle.checked ? 'true' : 'false';
+            document.getElementById('screensaverToggleValue1').value = screensaverToggle.checked ? 'true' : 'false';
+            document.getElementById('lotteryAlertToggleValue1').value = lotteryAlertToggle.checked ? 'true' : 'false';
+            // document.getElementById('lineAlertToggleValue1').value = lineAlertToggle.checked ? 'true' : 'false';
+        }
+
+        pageMode.addEventListener('change', updateToggleValues);
+        profileToggle.addEventListener('change', updateToggleValues);
+        coinToggle.addEventListener('change', updateToggleValues);
+        screensaverToggle.addEventListener('change', updateToggleValues);
+        lotteryAlertToggle.addEventListener('change', updateToggleValues);
+        // lineAlertToggle.addEventListener('change', updateToggleValues);
+
+        // Coin selection scripts
+        let coinTypes = {
+            crypto: {},
+            indice: {},
+            stock: {},
+            currency: {}
+        };
+
+
+        function setRadioSelection(name, assetType) {
+            document.querySelector(`[name="${name}"][value="${assetType}"]`).checked = true;
+        }
+
+        function convertTypeToAsset(type) {
+            switch (type) {
+                case "0":
+                    return 'crypto';
+                case "1":
+                    return 'crypto';
+                case "2":
+                    return 'crypto';
+                case "3":
+                    return 'crypto';
+                case "4":
+                    return 'stock';
+                case "5":
+                    return 'bond';
+                case "6":
+                    return 'currency';
+                case "7":
+                    return 'indice';
+                default:
+                    return 'crypto';
+            }
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('[name="assetType1"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    let assetType = document.querySelector('[name="assetType1"]:checked').value;
+                    console.log(`Coin1 assetType: ${assetType}`); // 🟦 เพิ่มบรรทัดนี้
+
+                    fetchData(assetType, 'coinSelect1', 'coinPreview1');
+                    toggleMarketDropdown(assetType, 'marketSelect1Wrapper');
+                });
+            });
+
+            document.querySelectorAll('[name="assetType2"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    let assetType = document.querySelector('[name="assetType2"]:checked').value;
+                    console.log(`Coin2 assetType: ${assetType}`); // 🟦 เพิ่มบรรทัดนี้
+
+                    fetchData(assetType, 'coinSelect2', 'coinPreview2');
+                    toggleMarketDropdown(assetType, 'marketSelect2Wrapper');
+                });
+            });
+
+            document.querySelectorAll('[name="assetType3"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    let assetType = document.querySelector('[name="assetType3"]:checked').value;
+                    console.log(`Coin3 assetType: ${assetType}`); // 🟦 เพิ่มบรรทัดนี้
+
+                    fetchData(assetType, 'coinSelect3', 'coinPreview3');
+                    toggleMarketDropdown(assetType, 'marketSelect3Wrapper');
+                });
+            });
+
+            document.querySelectorAll('[name="assetType4"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    let assetType = document.querySelector('[name="assetType4"]:checked').value;
+                    console.log(`Coin4 assetType: ${assetType}`); // 🟦 เพิ่มบรรทัดนี้
+
+                    fetchData(assetType, 'coinSelect4', 'coinPreview4');
+                    toggleMarketDropdown(assetType, 'marketSelect4Wrapper');
+                });
+            });
+
+            document.getElementById("coinSelect1").addEventListener("change", function () {
+                let assetType = document.querySelector('[name="assetType1"]:checked').value;
+                updateCoinPreview(this.value, 'coinPreview1', assetType);
+                updateTypeInput(this.value, assetType, 'type1');
+            });
+
+            document.getElementById("coinSelect2").addEventListener("change", function () {
+                let assetType = document.querySelector('[name="assetType2"]:checked').value;
+                updateCoinPreview(this.value, 'coinPreview2', assetType);
+                updateTypeInput(this.value, assetType, 'type2');
+            });
+
+
+
+            document.getElementById("coinSelect3").addEventListener("change", function () {
+                let assetType = document.querySelector('[name="assetType3"]:checked').value;
+                updateCoinPreview(this.value, 'coinPreview3', assetType);
+                updateTypeInput(this.value, assetType, 'type3');
+            });
+
+            document.getElementById("coinSelect4").addEventListener("change", function () {
+                let assetType = document.querySelector('[name="assetType4"]:checked').value;
+                updateCoinPreview(this.value, 'coinPreview4', assetType);
+                updateTypeInput(this.value, assetType, 'type4');
+            });
+
+            ["marketSelect1", "marketSelect2", "marketSelect3", "marketSelect4"].forEach(id => {
+                document.getElementById(id).addEventListener("change", function () {
+                    const idx = id.replace("marketSelect", "");
+                    const assetType = document.querySelector(`[name="assetType${idx}"]:checked`).value;
+                    if (assetType === "stock") {
+                        fetchData(assetType, `coinSelect${idx}`, `coinPreview${idx}`);
+                    }
+                });
+            });
+
+
+
+            const pageModeToggle = document.getElementById('pageMode');
+            const dynamicPages = document.getElementById('dynamicPages');
+            pageModeToggle.addEventListener('change', function () {
+                dynamicPages.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+
+        function fetchData(assetType, selectId, previewId, defaultValue) {
+            let csvFile;
+            let marketId = selectId.replace('coinSelect', 'marketSelect');
+            let market = document.getElementById(marketId)?.value || 'nasdaq';
+
+
+            if (assetType === 'stock') {
+                csvFile = `stocks/${market.toLowerCase()}.csv`;
+            } else if (assetType === 'indice') {
+                csvFile = 'Indice.csv';
+            } else if (assetType === 'currency') {
+                csvFile = 'currency.csv';
+            } else if (assetType === 'crypto') {
+                csvFile = 'crypto.csv';
+            }
+            let baseUrl = "https://cryptoclocks.github.io/2025/assets/csv/";
+            fetch(`${baseUrl}${csvFile}`)
+                .then(response => response.text())
+                .then(data => {
+                    updateDropdown(data, selectId, previewId, assetType, defaultValue);
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function updateDropdown(data, selectId, previewId, assetType, defaultValue) {
+            let lines = data.split("\n");
+            coinTypes[assetType] = {};
+            let coins = lines.map(line => {
+                let parts = line.split(",");
+                let coin = parts[0].trim();
+                let type = parts[1].trim();
+                coinTypes[assetType][coin] = type;
+                return { name: coin, type: type };
+            }).filter(coin => coin.name);
+
+            coins.sort((a, b) => a.name.localeCompare(b.name));
+            let dropdown = document.getElementById(selectId);
+            dropdown.innerHTML = '';
+            coins.forEach(coin => {
+                let option = new Option(coin.name, coin.name);
+                option.selected = coin.name === defaultValue;
+                dropdown.appendChild(option);
+            });
+            dropdown.value = defaultValue && coins.some(coin => coin.name === defaultValue) ? defaultValue : coins[0].name;
+            updateCoinPreview(dropdown.value, previewId, assetType);
+            updateTypeInput(dropdown.value, assetType, selectId.replace('coinSelect', 'type'));
+        }
+
+        // ───────────────────────────────────────────────────────────────
+        //  แสดงไอคอนตัวอย่างเมื่อผู้ใช้เลือกเหรียญ / ตลาด / ประเภทสินทรัพย์
+        //  • crypto      →  assets/images/jpg48_crypto/<coin>.jpg
+        //  • indice      →  assets/images/jpg48_indice/<coin>.jpg
+        //  • currency    →  assets/images/jpg48_currency/<coin>.jpg
+        //  • stock type4 →  assets/images/jpg48_stock/<market>/<coin>.jpg
+        //      (market มาจาก <select id="marketSelectX"> ที่คู่กัน)
+        // ───────────────────────────────────────────────────────────────
+        function updateCoinPreview(coin, previewId, assetType) {
+            const baseUrl = "https://cryptoclocks.github.io/2025/assets/images/";
+            let imagePath = "";
+
+            if (assetType === "crypto") {
+                imagePath = `${baseUrl}jpg48_crypto/${coin.toLowerCase()}.jpg`;
+            } else if (assetType === "indice") {
+                imagePath = `${baseUrl}jpg48_indice/indice.jpg`;
+            } else if (assetType === "currency") {
+                imagePath = `${baseUrl}jpg48_currency/${coin.toLowerCase()}.jpg`;
+            } else if (assetType === "stock") {
+                // ⬇️ หาหมายเลข index (1-4) จาก id ของรูปตัวอย่าง
+                const idx = previewId.replace("coinPreview", "");
+                // ⬇️ อ่านค่าตลาดจาก combo box marketSelectX
+                const market = document.getElementById(`marketSelect${idx}`)?.value.toLowerCase() || "nasdaq";
+                imagePath = `${baseUrl}jpg48_stock/${market}/${coin.toLowerCase()}.jpg`;
+            }
+
+            document.getElementById(previewId).src = imagePath;
+        }
+
+
+        function updateTypeInput(coin, assetType, typeId) {
+            let typeValue = coinTypes[assetType][coin];
+            document.getElementById(typeId).value = typeValue;
+        }
+
+
+        document.querySelectorAll('#profileSection .card').forEach(card => {
+            // wrap เนื้อหาไว้ใน .accordion-content ถ้ายังไม่มี
+            if (!card.querySelector('.accordion-content')) {
+                let nodes = [];
+                card.childNodes.forEach(n => { if (n.nodeType === 1 && n.tagName !== 'H4') nodes.push(n); });
+                let div = document.createElement('div');
+                div.className = 'accordion-content';
+                nodes.forEach(n => div.appendChild(n));
+                card.appendChild(div);
+            }
+            card.classList.add('collapsed'); // เริ่มต้นทุกอันย่อ
+            card.querySelector('.accordion-toggle').addEventListener('click', function () {
+                card.classList.toggle('collapsed');
+            });
+        });
+
+
+        showSection('profileSection');
+        //showSection('coinSection'); // ✅ เพื่อทดสอบ Coin
+        setupEventListeners();      // ✅ สำคัญมาก!
+    </script>
+
+
+
+</body>
+
+</html>
