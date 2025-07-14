@@ -1198,7 +1198,7 @@
 
                 </div>
             </div>
-      
+
             <button type="submit" name="submit3" class="button">Submit Alerts</button>
         </form>
 
@@ -1298,12 +1298,17 @@
 
         function toggleMarketDropdown(assetType, wrapperId) {
             const wrapper = document.getElementById(wrapperId);
+            if (!wrapper) return;
+
             if (assetType === 'stock') {
-                wrapper.classList.remove('hidden');
+                wrapper.classList.remove('hidden');    // ✅ ลบ class ก่อน
+                wrapper.style.display = 'block';       // ✅ แล้วค่อยสั่งแสดง
             } else {
                 wrapper.classList.add('hidden');
+                wrapper.style.display = '';            // ✅ reset ให้ใช้ CSS เดิม
             }
         }
+
 
 
         function convertAndPreviewImage(event) {
@@ -1373,7 +1378,7 @@
                 .then(response => response.json())
                 .then(data => {
 
-                    
+
                     document.getElementById("lotteryAlert").checked = data.lotteryAlert;
                     document.getElementById("alertEnable").checked = data.alertEnable;
 
@@ -1502,7 +1507,7 @@
                     if (data.screensaverToggle === undefined) alert('screensaverToggle is missing');
                     // if (!data.lineNotifyToken) alert('lineNotifyToken is missing');
                     if (!data.sdStatus) alert('sdStatus is missing');
-    
+
                     if (!data.coin1) alert('coin1 is missing');
                     if (!data.coin2) alert('coin2 is missing');
                     if (!data.coin3) alert('coin3 is missing');
@@ -1553,22 +1558,28 @@
                     setRadioSelection('assetType2', assetType2);
                     setRadioSelection('assetType3', assetType3);
                     setRadioSelection('assetType4', assetType4);
+
+                    toggleMarketDropdown(assetType1, 'marketSelect1Wrapper');
+                    toggleMarketDropdown(assetType2, 'marketSelect2Wrapper');
+                    toggleMarketDropdown(assetType3, 'marketSelect3Wrapper');
+                    toggleMarketDropdown(assetType4, 'marketSelect4Wrapper');
+
                     setupEventListeners();
                     // ✅ ใส่ตรงนี้เลย
-                    requestAnimationFrame(() => {
-                        if (assetType1 !== 'stock') {
-                            document.getElementById('marketSelect1Wrapper').classList.add('hidden');
-                        }
-                        if (assetType2 !== 'stock') {
-                            document.getElementById('marketSelect2Wrapper').classList.add('hidden');
-                        }
-                        if (assetType3 !== 'stock') {
-                            document.getElementById('marketSelect3Wrapper').classList.add('hidden');
-                        }
-                        if (assetType4 !== 'stock') {
-                            document.getElementById('marketSelect4Wrapper').classList.add('hidden');
-                        }
-                    });
+                    // requestAnimationFrame(() => {
+                    //     if (assetType1 !== 'stock') {
+                    //         document.getElementById('marketSelect1Wrapper').classList.add('hidden');
+                    //     }
+                    //     if (assetType2 !== 'stock') {
+                    //         document.getElementById('marketSelect2Wrapper').classList.add('hidden');
+                    //     }
+                    //     if (assetType3 !== 'stock') {
+                    //         document.getElementById('marketSelect3Wrapper').classList.add('hidden');
+                    //     }
+                    //     if (assetType4 !== 'stock') {
+                    //         document.getElementById('marketSelect4Wrapper').classList.add('hidden');
+                    //     }
+                    // });
 
                     // เพิ่มตรงนี้หลัง setupEventListeners เพื่อให้โชว์/ซ่อนตลาดให้ถูกทันที
                     document.getElementById('marketSelect1').value = data.market1 || 'NASDAQ';
@@ -1592,7 +1603,7 @@
                     document.getElementById('colorPicker2').value = data.color2;
                     document.getElementById('colorPicker3').value = data.color3 || '#ffffff';
                     document.getElementById('colorPicker4').value = data.color4 || '#ffffff';
-                   
+
                     //loadRegions(data.region || 'default');
                     document.getElementById('timeZoneSelect').value = data.timeZone || 'Asia/Bangkok';
                     document.getElementById('regionSelect').value = data.region || 'default';
@@ -1617,14 +1628,14 @@
         const profileToggle = document.getElementById('profileToggle');
         const coinToggle = document.getElementById('coinToggle');
         const screensaverToggle = document.getElementById('screensaverToggle');
-       
+
         // const lineAlertToggle = document.getElementById('lineAlertToggle');
         function updateToggleValues() {
             document.getElementById('pageModeValue1').value = pageMode.checked ? 'dynamic' : 'static';
             document.getElementById('profileToggleValue1').value = profileToggle.checked ? 'true' : 'false';
             document.getElementById('coinToggleValue1').value = coinToggle.checked ? 'true' : 'false';
             document.getElementById('screensaverToggleValue1').value = screensaverToggle.checked ? 'true' : 'false';
-            
+
             document.getElementById('alertEnable').value = document.getElementById('alertEnableToggle').checked ? 'true' : 'false';
             document.getElementById('lotteryAlert').value = document.getElementById('lotteryAlertToggle').checked ? 'true' : 'false';
 
@@ -1635,8 +1646,8 @@
         profileToggle.addEventListener('change', updateToggleValues);
         coinToggle.addEventListener('change', updateToggleValues);
         screensaverToggle.addEventListener('change', updateToggleValues);
-       
-     
+
+
         // Coin selection scripts
         let coinTypes = {
             crypto: {},
@@ -1681,6 +1692,7 @@
 
                     fetchData(assetType, 'coinSelect1', 'coinPreview1');
                     toggleMarketDropdown(assetType, 'marketSelect1Wrapper');
+
                 });
             });
 
@@ -1935,6 +1947,7 @@
             lucide.createIcons();
         });
     </script>
+
 </body>
 
 </html>
