@@ -1,0 +1,11 @@
+Firstname: Satoshi
+Lastname: Nakamoto
+Nickname: Sat
+Position: Founder
+Company: Bitcoin
+Motto: We are all Satoshi.
+BGColor: #000000
+NameColor: #FFAE00
+DetailColor: #FFFFFF
+MottoColor: #FFAE00
+DateTimeColor: #FFFFFF
