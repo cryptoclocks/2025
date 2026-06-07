@@ -1,0 +1,22 @@
+{
+    "USDT": {
+        "url": "https://api.binance.com/api/v3/ticker/24hr?symbol={symbol}USDT",
+        "json_path": {
+            "price": "lastPrice",
+            "highPrice": "highPrice",
+            "lowPrice": "lowPrice",
+            "priceChange": "priceChange",
+            "priceChangePercent": "priceChangePercent"
+        }
+    },
+    "THB": {
+        "url": "https://api.bitkub.com/api/v3/market/ticker?sym={symbol}_THB",
+        "json_path": {
+            "price": "0.last",
+            "highPrice": "0.high_24_hr",
+            "lowPrice": "0.low_24_hr",
+            "priceChange": "0.base_volume",
+            "priceChangePercent": "0.percent_change"
+        }
+    }
+}

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Screensaver Manager</title>
+  <style>
+    .image-container {
+      position: relative;
+      display: inline-block;
+      margin: 0 5px;
+      border: 2px solid #40E0D0;
+      border-radius: 15px;
+      padding: 5px;
+      box-sizing: border-box;
+      /* เพิ่ม box-sizing */
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      cursor: grab;
+    }
+
+    .delete-button {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      cursor: pointer;
+    }
+
+    .image-number {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background-color: white;
+      color: black;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 20px;
+      font-weight: bold;
+    }
+
+    #fileList {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .image-container {
+        flex: 1 1 calc(25% - 10px);
+        /* แสดง 4 รูปต่อแถว */
+      }
+    }
+
+    @media (max-width: 599px) {
+      .image-container {
+        flex: 1 1 calc(50% - 10px);
+        /* แสดง 2 รูปต่อแถว */
+      }
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+</head>
+
+<body>
+  <h1>Screensaver Manager</h1>
+  <div id="fileList"></div>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" id="fileInput" name="file" accept="image/*" required
+      onchange="convertAndPreviewImage(event)"><br><br>
+    <img id="preview" width="200" /><br><br>
+    <input type="submit" value="Upload">
+  </form>
+  <script>
+    function convertAndPreviewImage(event) {
+      var file = event.target.files[0];
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        var img = new Image();
+        img.onload = function () {
+          var canvas = document.createElement('canvas');
+          var ctx = canvas.getContext('2d');
+          canvas.width = 320;
+          canvas.height = 240;
+
+          var ratio = Math.min(canvas.width / img.width, canvas.height / img.height);
+          var newWidth = img.width * ratio;
+          var newHeight = img.height * ratio;
+
+          ctx.fillStyle = 'black';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          var xOffset = (canvas.width - newWidth) / 2;
+          var yOffset = (canvas.height - newHeight) / 2;
+          ctx.drawImage(img, xOffset, yOffset, newWidth, newHeight);
+
+          canvas.toBlob(function (blob) {
+            var newFile = new File([blob], file.name.replace(/\..+$/, '.jpg'), { type: 'image/jpeg' });
+            var dataTransfer = new DataTransfer();
+            dataTransfer.items.add(newFile);
+            document.getElementById('fileInput').files = dataTransfer.files;
+
+            var output = document.getElementById('preview');
+            output.src = URL.createObjectURL(blob);
+          }, 'image/jpeg', 0.92);
+        };
+        img.src = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById('uploadForm').onsubmit = function (event) {
+      event.preventDefault();
+      var formData = new FormData(document.getElementById('uploadForm'));
+      fetch('/upload', { method: 'POST', body: formData }).then(response => {
+        if (response.ok) {
+          loadFiles();
+          document.getElementById('uploadForm').reset();
+          document.getElementById('preview').src = '';
+          checkFileCount();
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        }
+      });
+    };
+
+    let reloadAttempted = false;
+
+    function loadFiles() {
+      fetch('/listfiles').then(response => response.json()).then(data => {
+        var fileList = document.getElementById('fileList');
+        fileList.innerHTML = '';
+
+        // if (data.files.length === 0 && !reloadAttempted) {
+        //   reloadAttempted = true;
+        //   setTimeout(() => {
+        //     location.reload();
+        //   }, 2000);
+        //   return;
+        // }
+        if (data.files.length === 0) {
+          reloadAttempted = false; // Reset reload attempt
+          return; // ออกจากฟังก์ชัน ไม่ต้องโหลดใหม่
+        }
+        data.files.forEach((file, index) => {
+          var div = document.createElement('div');
+          div.className = 'image-container';
+          div.setAttribute('data-index', index);
+
+          var img = document.createElement('img');
+          img.src = file;
+          div.appendChild(img);
+
+          var deleteButton = document.createElement('button');
+          deleteButton.className = 'delete-button';
+          deleteButton.textContent = 'X';
+          deleteButton.onclick = function () {
+            fetch('/deletefile?path=' + file).then(response => {
+              if (response.ok) {
+                //location.reload();
+                loadFiles(); // แทนที่จะโหลดหน้าใหม่ ให้โหลดภาพใหม่เท่านั้น
+                checkFileCount();
+              }
+            });
+          };
+          div.appendChild(deleteButton);
+
+          var numberDiv = document.createElement('div');
+          numberDiv.className = 'image-number';
+          numberDiv.textContent = index + 1;
+          div.appendChild(numberDiv);
+
+          fileList.appendChild(div);
+        });
+
+        $("#fileList").sortable({
+          update: function (event, ui) {
+            updateFileOrder();
+          }
+        });
+      }).catch(error => {
+        // setTimeout(() => {
+        //   location.reload();
+        // }, 2000);
+        console.error('Error loading files:', error);
+      });
+    }
+
+    function checkFileCount() {
+      fetch('/listfiles').then(response => response.json()).then(data => {
+        if (data.files.length >= 10) {
+          document.getElementById('fileInput').disabled = true;
+          document.querySelector('input[type="submit"]').disabled = true;
+        } else {
+          document.getElementById('fileInput').disabled = false;
+          document.querySelector('input[type="submit"]').disabled = false;
+        }
+      }).catch(error => {
+        // เปิดการใช้งานเสมอในกรณีที่เกิดข้อผิดพลาด
+        document.getElementById('fileInput').disabled = false;
+        document.querySelector('input[type="submit"]').disabled = false;
+      });
+
+    }
+
+    window.onload = function () {
+      loadFiles();
+      checkFileCount();
+    }
+
+    function updateFileOrder() {
+      const order = [];
+      $('.image-container').each(function () {
+        order.push($(this).find('img').attr('src').split('/').pop());
+      });
+
+      fetch('/updateOrder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order })
+      }).then(response => {
+        if (response.ok) {
+          location.reload();
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
