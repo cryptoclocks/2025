@@ -1660,25 +1660,33 @@
 	        const screensaverToggle = document.getElementById('screensaverToggle');
 	        const cdcToggle = document.getElementById('cdcToggle');
 
-        // const lineAlertToggle = document.getElementById('lineAlertToggle');
-        function updateToggleValues() {
-            document.getElementById('pageModeValue1').value = pageMode.checked ? 'dynamic' : 'static';
-	            document.getElementById('profileToggleValue1').value = profileToggle.checked ? 'true' : 'false';
-	            document.getElementById('coinToggleValue1').value = coinToggle.checked ? 'true' : 'false';
-	            document.getElementById('screensaverToggleValue1').value = screensaverToggle.checked ? 'true' : 'false';
-	            document.getElementById('cdcToggleValue1').value = cdcToggle.checked ? 'true' : 'false';
+	        // const lineAlertToggle = document.getElementById('lineAlertToggle');
+	        function updateToggleValues() {
+	            const pageModeValue = document.getElementById('pageModeValue1');
+	            const profileToggleValue = document.getElementById('profileToggleValue1');
+	            const coinToggleValue = document.getElementById('coinToggleValue1');
+	            const screensaverToggleValue = document.getElementById('screensaverToggleValue1');
+	            const cdcToggleValue = document.getElementById('cdcToggleValue1');
+	            const alertEnable = document.getElementById('alertEnable');
+	            const lotteryAlert = document.getElementById('lotteryAlert');
 
-            document.getElementById('alertEnable').value = document.getElementById('alertEnableToggle').checked ? 'true' : 'false';
-            document.getElementById('lotteryAlert').value = document.getElementById('lotteryAlertToggle').checked ? 'true' : 'false';
+	            if (pageModeValue && pageMode) pageModeValue.value = pageMode.checked ? 'dynamic' : 'static';
+	            if (profileToggleValue && profileToggle) profileToggleValue.value = profileToggle.checked ? 'true' : 'false';
+	            if (coinToggleValue && coinToggle) coinToggleValue.value = coinToggle.checked ? 'true' : 'false';
+	            if (screensaverToggleValue && screensaverToggle) screensaverToggleValue.value = screensaverToggle.checked ? 'true' : 'false';
+	            if (cdcToggleValue && cdcToggle) cdcToggleValue.value = cdcToggle.checked ? 'true' : 'false';
 
-            // document.getElementById('lineAlertToggleValue1').value = lineAlertToggle.checked ? 'true' : 'false';
-        }
+	            if (alertEnable) alertEnable.value = alertEnable.checked ? 'true' : 'false';
+	            if (lotteryAlert) lotteryAlert.value = lotteryAlert.checked ? 'true' : 'false';
 
-        pageMode.addEventListener('change', updateToggleValues);
-	        profileToggle.addEventListener('change', updateToggleValues);
-	        coinToggle.addEventListener('change', updateToggleValues);
-	        screensaverToggle.addEventListener('change', updateToggleValues);
-	        cdcToggle.addEventListener('change', updateToggleValues);
+	            // document.getElementById('lineAlertToggleValue1').value = lineAlertToggle.checked ? 'true' : 'false';
+	        }
+
+	        if (pageMode) pageMode.addEventListener('change', updateToggleValues);
+	        if (profileToggle) profileToggle.addEventListener('change', updateToggleValues);
+	        if (coinToggle) coinToggle.addEventListener('change', updateToggleValues);
+	        if (screensaverToggle) screensaverToggle.addEventListener('change', updateToggleValues);
+	        if (cdcToggle) cdcToggle.addEventListener('change', updateToggleValues);
 
 
         // Coin selection scripts
