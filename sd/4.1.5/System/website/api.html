@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Configuration</title>
+  <!-- Import Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and box-sizing */
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Body styling */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e0f7f5, #f7fffd);
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+    }
+
+    /* Central container for the content */
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      border-top: 5px solid #13a89e;
+    }
+
+    /* Heading style */
+    h2 {
+      text-align: center;
+      color: #13a89e;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    /* Label styling */
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    /* Styling for inputs and selects */
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 2px solid #eee;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Focus effect for inputs/selects */
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #13a89e;
+      box-shadow: 0 0 10px rgba(19, 168, 158, 0.2);
+    }
+
+    /* Button styling */
+    button {
+      flex: 1;
+      padding: 15px;
+      background: #13a89e;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Styling for disabled buttons */
+    button:disabled {
+      background: #ccc;
+      /* สีเทา */
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Button hover effect */
+    button:hover {
+      background: #0e8c80;
+      transform: translateY(-2px);
+    }
+
+    /* Container for button row */
+    .button-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    /* Styling for the JSON output area */
+    pre {
+      background: #f7f7f7;
+      padding: 20px;
+      border-radius: 6px;
+      border: 1px solid #e0e0e0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    /* Subheading styling */
+    h3 {
+      margin-top: 40px;
+      color: #13a89e;
+      font-size: 20px;
+      font-weight: 600;
+      border-bottom: 2px solid #13a89e;
+      padding-bottom: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>API Configuration</h2>
+
+    <label>Select Currency:</label>
+    <select id="currency" onchange="updateFields()">
+      <option value="USDT">USDT (Binance)</option>
+      <option value="THB">THB (Bitkub)</option>
+    </select>
+
+    <label>API URL:</label>
+    <input type="text" id="apiUrl">
+
+    <label>JSON Path (Current Price):</label>
+    <input type="text" id="pricePath">
+
+    <label>JSON Path (Highest Price):</label>
+    <input type="text" id="highPath">
+
+    <label>JSON Path (Lowest Price):</label>
+    <input type="text" id="lowPath">
+
+    <label>JSON Path (Price Change):</label>
+    <input type="text" id="changePath">
+
+    <label>JSON Path (Percentage Change):</label>
+    <input type="text" id="percentPath">
+
+    <!-- ปุ่ม Test และ Save อยู่ในบรรทัดเดียวกัน -->
+    <div class="button-row">
+      <button id="testButton" onclick="testConfig()">Test</button>
+      <button id="saveButton" onclick="saveConfig()" disabled>Save</button>
+    </div>
+
+    <h3>Test Result:</h3>
+    <div id="testResults">Not have Test Result</div>
+
+    <h3>Sample JSON will Save:</h3>
+    <pre id="jsonOutput">{}</pre>
+  </div>
+
+  <script>
+    // Default configuration values using a usable API format
+    let configData = {
+      "USDT": {
+        "url": "https://api.binance.com/api/v3/ticker/24hr?symbol={symbol}USDT",
+        "json_path": {
+          "price": "lastPrice",
+          "highPrice": "highPrice",
+          "lowPrice": "lowPrice",
+          "priceChange": "priceChange",
+          "priceChangePercent": "priceChangePercent"
+        }
+      },
+      "THB": {
+        "url": "https://api.bitkub.com/api/market/ticker?sym=THB_{symbol}",
+        "json_path": {
+          "price": "THB_{symbol}.last",
+          "highPrice": "THB_{symbol}.high24hr",
+          "lowPrice": "THB_{symbol}.low24hr",
+          "priceChange": "THB_{symbol}.change",
+          "priceChangePercent": "THB_{symbol}.percentChange"
+        }
+      }
+    };
+
+    // โหลด API configuration จาก ESP32
+    function loadConfig() {
+      fetch("/getConfig")
+        .then(response => response.json())
+        .then(data => {
+          configData = data;
+          updateFields();
+        })
+        .catch(error => {
+          console.error("Error loading config:", error);
+          // ถ้า fetch ล้มเหลวให้ใช้ default configuration
+          updateFields();
+        });
+    }
+
+    // อัปเดตค่าใน input fields ตามสกุลเงินที่เลือก
+    function updateFields() {
+      let currency = document.getElementById("currency").value;
+      if (configData[currency]) {
+        document.getElementById("apiUrl").value = configData[currency].url;
+        document.getElementById("pricePath").value = configData[currency].json_path.price;
+        document.getElementById("highPath").value = configData[currency].json_path.highPrice;
+        document.getElementById("lowPath").value = configData[currency].json_path.lowPrice;
+        document.getElementById("changePath").value = configData[currency].json_path.priceChange;
+        document.getElementById("percentPath").value = configData[currency].json_path.priceChangePercent;
+      }
+      // เมื่อเปลี่ยนค่า currency ให้ disable ปุ่ม Save จนกว่าจะผ่านการทดสอบ
+      document.getElementById("saveButton").disabled = true;
+      document.getElementById("testResults").innerHTML = "ยังไม่มีผลการทดสอบ";
+    }
+
+    // ฟังก์ชันช่วยในการอ่านค่าจาก JSON ด้วย path (ใช้ . เป็นตัวคั่น)
+    function extractValue(data, path) {
+      if (!path) return undefined;
+      let keys = path.split(".");
+      let result = data;
+      for (let key of keys) {
+        if (result && key in result) {
+          result = result[key];
+        } else {
+          return undefined;
+        }
+      }
+      return result;
+    }
+
+    // ทดสอบการ fetch ค่า API และตรวจสอบค่าที่ได้
+    function testConfig() {
+      // Disable ปุ่ม Save ขณะทดสอบ
+      document.getElementById("saveButton").disabled = true;
+
+      let url = document.getElementById("apiUrl").value;
+      // ถ้ามี {symbol} ให้แทนที่ด้วย "BTC" สำหรับการทดสอบ
+      if (url.includes("{symbol}")) {
+        url = url.replace("{symbol}", "BTC");
+      }
+
+      document.getElementById("testResults").innerHTML = "กำลังทดสอบ...";
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          // ดึงค่าแต่ละฟิลด์โดยใช้ JSON Path ที่กำหนด
+          let currentPrice = extractValue(data, document.getElementById("pricePath").value.replace("{symbol}", "BTC"));
+          let highPrice = extractValue(data, document.getElementById("highPath").value.replace("{symbol}", "BTC"));
+          let lowPrice = extractValue(data, document.getElementById("lowPath").value.replace("{symbol}", "BTC"));
+          let priceChange = extractValue(data, document.getElementById("changePath").value.replace("{symbol}", "BTC"));
+          let percentChange = extractValue(data, document.getElementById("percentPath").value.replace("{symbol}", "BTC"));
+
+          // สร้าง HTML สำหรับแสดงผลลัพธ์
+          let resultHTML = "<ul>";
+          resultHTML += "<li><strong>Current Price:</strong> " + (currentPrice !== undefined ? currentPrice : "N/A") + "</li>";
+          resultHTML += "<li><strong>Highest Price:</strong> " + (highPrice !== undefined ? highPrice : "N/A") + "</li>";
+          resultHTML += "<li><strong>Lowest Price:</strong> " + (lowPrice !== undefined ? lowPrice : "N/A") + "</li>";
+          resultHTML += "<li><strong>Price Change:</strong> " + (priceChange !== undefined ? priceChange : "N/A") + "</li>";
+          resultHTML += "<li><strong>Percentage Change:</strong> " + (percentChange !== undefined ? percentChange : "N/A") + "</li>";
+          resultHTML += "</ul>";
+          document.getElementById("testResults").innerHTML = resultHTML;
+
+          // ตรวจสอบว่าค่าทุกอันมีข้อมูลหรือไม่
+          if (currentPrice != null && highPrice != null && lowPrice != null && priceChange != null && percentChange != null &&
+            currentPrice !== "" && highPrice !== "" && lowPrice !== "" && priceChange !== "" && percentChange !== "") {
+            document.getElementById("saveButton").disabled = false;
+          } else {
+            document.getElementById("saveButton").disabled = true;
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching test data:", error);
+          document.getElementById("testResults").innerHTML = "เกิดข้อผิดพลาดในการ fetch ข้อมูล";
+          document.getElementById("saveButton").disabled = true;
+        });
+    }
+
+    // บันทึกการตั้งค่า (อัปเดตเฉพาะส่วนที่เปลี่ยนแปลง)
+    function saveConfig() {
+      let currency = document.getElementById("currency").value;
+
+      // อัปเดต configuration สำหรับสกุลเงินที่เลือก
+      configData[currency] = {
+        "url": document.getElementById("apiUrl").value,
+        "json_path": {
+          "price": document.getElementById("pricePath").value,
+          "highPrice": document.getElementById("highPath").value,
+          "lowPrice": document.getElementById("lowPath").value,
+          "priceChange": document.getElementById("changePath").value,
+          "priceChangePercent": document.getElementById("percentPath").value
+        }
+      };
+
+      // แปลง configuration เป็น JSON และแสดงตัวอย่าง
+      let jsonString = JSON.stringify(configData, null, 4);
+      document.getElementById("jsonOutput").textContent = jsonString;
+
+      fetch("/saveConfig", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: jsonString
+      })
+        .then(response => response.text())
+        .then(data => alert("Configuration updated successfully!"))
+        .catch(error => console.error("Error:", error));
+    }
+
+    // โหลด configuration เมื่อหน้าเพจถูกโหลด
+    window.onload = loadConfig;
+  </script>
+</body>
+
+</html>

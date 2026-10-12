@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Yahoo Finance Test</title>
+</head>
+<body>
+  <h1>ทดสอบราคาจาก Yahoo</h1>
+  <button onclick="fetchYahoo()">Fetch BTC-USD</button>
+  <pre id="output">กดปุ่มเพื่อเริ่ม</pre>
+
+  <script>
+    function fetchYahoo() {
+      const output = document.getElementById("output");
+
+      // ✅ ใช้ CORS proxy (เพื่อทดสอบเท่านั้น)
+      const url = "https://cors-anywhere.herokuapp.com/https://query2.finance.yahoo.com/v8/finance/chart/BTC-USD?interval=1d";
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          const meta = data.chart.result[0].meta;
+          const current = meta.regularMarketPrice;
+          const previous = meta.chartPreviousClose;
+          const change = (current - previous).toFixed(2);
+          const percent = ((change / previous) * 100).toFixed(2);
+
+          output.textContent = `📈 BTC-USD:
+Current: $${current}
+Previous Close: $${previous}
+Change: $${change} (${percent}%)`;
+        })
+        .catch(err => {
+          output.textContent = "❌ เกิดข้อผิดพลาด:\n" + err;
+          console.error(err);
+        });
+    }
+  </script>
+</body>
+</html>
